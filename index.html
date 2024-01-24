@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Stopwatch</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #stopwatch-container {
+            text-align: center;
+        }
+
+        #time {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        #milliseconds {
+            font-size: 1.5em;
+            color: #666;
+        }
+
+        #lap-container {
+            margin: 20px 0;
+        }
+
+        #lap-history {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .lap-item {
+            margin-bottom: 5px;
+        }
+
+        #controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        #start {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        #stop, #reset, #lap {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #lap {
+            background-color: #2196f3;
+        }
+
+    
+
+        select {
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+<div id="stopwatch-container">
+    <div id="time">00:00:00</div>
+    <div id="milliseconds">00</div>
+    <div id="lap-container">
+        <button id="lap">Lap</button>
+        <ul id="lap-history"></ul>
+    </div>
+    <div id="controls">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+    </div>
+   
+</div>
+
+
+
+
+<script>
+
+    let timer;
+    let isRunning = false;
+    let milliseconds = 0, seconds = 0, minutes = 0, hours = 0;
+    let lapCount = 1;
+
+    function updateDisplay() {
+        const formattedTime = formatTime();
+        const formattedMilliseconds = String(milliseconds).padStart(2, '0');
+        document.getElementById('time').textContent = formattedTime;
+        document.getElementById('milliseconds').textContent = formattedMilliseconds;
+    }
+
+    function formatTime() {
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function clearLapHistory() {
+        document.getElementById('lap-history').innerHTML = '';
+    }
+
+    function startStopwatch() {
+        console.log('Start button clicked');
+        if (!isRunning) {
+            isRunning = true;
+            timer = setInterval(updateTime, 10);
+        }
+    }
+
+    function stopStopwatch() {
+        console.log('Stop button clicked');
+        if (isRunning) {
+            isRunning = false;
+            clearInterval(timer);
+        }
+    }
+
+    function resetStopwatch() {
+        console.log('Reset button clicked');
+        stopStopwatch();
+        milliseconds = 0;
+        seconds = 0;
+        minutes = 0;
+        hours = 0;
+        lapCount = 1;
+        updateDisplay();
+        clearLapHistory();
+    }
+
+    function lapStopwatch() {
+        console.log('Lap button clicked');
+        const lapTime = formatTime();
+        const lapItem = document.createElement('li');
+        lapItem.className = 'lap-item';
+        lapItem.textContent = `Lap ${lapCount}: ${lapTime}`;
+        document.getElementById('lap-history').appendChild(lapItem);
+        lapCount++;
+    }
+
+    function updateTime() {
+        milliseconds += 10;
+        if (milliseconds === 1000) {
+            seconds++;
+            milliseconds = 0;
+        }
+        if (seconds === 60) {
+            minutes++;
+            seconds = 0;
+        }
+        if (minutes === 60) {
+            hours++;
+            minutes = 0;
+        }
+        updateDisplay();
+    }
+
+    document.getElementById('start').addEventListener('click', startStopwatch);
+    document.getElementById('stop').addEventListener('click', stopStopwatch);
+    document.getElementById('reset').addEventListener('click', resetStopwatch);
+    document.getElementById('lap').addEventListener('click', lapStopwatch);
+</script>
+
+</body>
+</html>
